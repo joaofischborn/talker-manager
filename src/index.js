@@ -31,8 +31,22 @@ app.get('/talker/:id', async (req, res) => {
 });
 
 app.post('/login', (req, res) => {
+    const { email, password } = req.body;
     const token = crypto.randomBytes(8).toString('hex');
-    res.status(200).json({ token });
+    const regex = /\S+@\S+\.\S+/;
+    if (!email) {
+      return res.status(400).json({ message: 'O campo "email" é obrigatório' });
+    }
+    if (!regex.test(email)) {
+      return res.status(400).json({ message: 'O "email" deve ter o formato "email@email.com"' });
+    }
+    if (!password) {
+      return res.status(400).json({ message: 'O campo "password" é obrigatório' });
+    }
+    if (password.length <= 5) {
+      return res.status(400).json({ message: 'O "password" deve ter pelo menos 6 caracteres' });
+    } 
+      return res.status(HTTP_OK_STATUS).json({ token });
 });
 
 // não remova esse endpoint, e para o avaliador funcionar
