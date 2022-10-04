@@ -49,28 +49,10 @@ app.post('/login', (req, res) => {
       return res.status(HTTP_OK_STATUS).json({ token });
 });
 
-app.post('/talker', (req, res) => {
-  const { name, age, talk, watchedAt, rate } = req.body;
-  const { authorization } = req.headers;
-  if (!authorization) {
-    res.status(401).json({ message: 'Token não encontrado' });
-  if (authorization.length < 15) {
-    res.status(401).json({ message: 'Token inválido' });
-  }
-  if (!name) {
-    res.status(400).json({ message: 'O campo "name" é obrigatório' });
-  }
-  if (name.length < 2) {
-    res.status(400).json({ message: 'O "name" deve ter pelo menos 3 caracteres' });
-  }
-  if (!age) {
-    res.status(400).json({ message: 'O campo "age" é obrigatório' });
-  }
-  if (age < 18) {
-    res.status(400).json({ message: 'A pessoa palestrante deve ser maior de idade' });
-  }
-  }
-});
+// app.post('/talker', async (req, res) => {
+//   const data = await fs.writeFile(path.resolve(__dirname, './talker.json'), 'utf-8');
+//   const talker = JSON.parse(data);
+// });
 
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
