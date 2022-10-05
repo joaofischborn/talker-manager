@@ -12,19 +12,6 @@ verifyWatchedAtDateFormat } = require('./middlewares/talkMiddleware');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(
-  verifyToken,
-  validateToken,
-  verifyAge,
-  verifyAgeEighteen,
-  verifyName,
-  verifyNameLength,
-  verifyRate,
-  verifyRateInteger,
-  verifyTalk,
-  verifyWatchedAt,
-  verifyWatchedAtDateFormat,
-  );
 
 const HTTP_OK_STATUS = 200;
 const PORT = '3000';
@@ -68,9 +55,13 @@ app.post('/login', (req, res) => {
       return res.status(HTTP_OK_STATUS).json({ token });
 });
 
-app.post('/talker', async (req, res) => {
+app.post('/talker', 
+validateToken, verifyToken, verifyAge, verifyAgeEighteen, verifyName, verifyNameLength, 
+verifyTalk, verifyWatchedAt, 
+verifyWatchedAtDateFormat, verifyRate, 
+verifyRateInteger, async (req, res) => {
   const data = await fs.readFile(path.resolve(__dirname, './talker.json'), 'utf-8');
-  const talker = data && JSON.parse(data);
+  const talker = JSON.parse(data);
   const newTalker = { ...req.body, id: talker.length + 1 };
   const newTalkerFile = [...talker, newTalker];
   await fs.writeFile(path.resolve(__dirname, './talker.json'), JSON.stringify(newTalkerFile));

@@ -1,42 +1,42 @@
-const verifyTalk = (req, res, next) => {
+const verifyTalk = async (req, res, next) => {
     const { talk } = req.body;
     if (talk) {
-    next();
+        return next();
     }
-    res.status(400).json({ message: 'O campo "talk" é obrigatório' });
+    return res.status(400).json({ message: 'O campo "talk" é obrigatório' });
 };
 
-const verifyWatchedAt = (req, res, next) => {
+const verifyWatchedAt = async (req, res, next) => {
     const { talk: { watchedAt } } = req.body;
     if (watchedAt) {
-    next();
+        return next();
     }
-    res.status(400).json({ message: 'O campo "watchedAt" é obrigatório' });
+    return res.status(400).json({ message: 'O campo "watchedAt" é obrigatório' });
 };
 
-const verifyWatchedAtDateFormat = (req, res, next) => {
+const verifyWatchedAtDateFormat = async (req, res, next) => {
     const { talk: { watchedAt } } = req.body;
     const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
     if (regex.test(watchedAt)) {
-    next();
+        return next();
     }
-    res.status(400).json({ message: 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"' });
+    return res.status(400).json({ message: 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"' });
 };
 
-const verifyRate = (req, res, next) => {
+const verifyRate = async (req, res, next) => {
     const { talk: { rate } } = req.body;
     if (rate) {
-    next();
+        return next();
     }
-    res.status(400).json({ message: 'O campo "rate" é obrigatório' });
+    return res.status(400).json({ message: 'O campo "rate" é obrigatório' });
 };
 
-const verifyRateInteger = (req, res, next) => {
+const verifyRateInteger = async (req, res, next) => {
     const { talk: { rate } } = req.body;
     if (rate >= 1 && rate <= 5) {
-    next();
+        return next();
     } 
-    res.status(400).json({ message: 'O campo "rate" deve ser um inteiro de 1 à 5' });
+    return res.status(400).json({ message: 'O campo "rate" deve ser um inteiro de 1 à 5' });
 };
 
 module.exports = { verifyTalk, 

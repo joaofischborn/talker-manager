@@ -1,17 +1,17 @@
-const verifyAge = (req, res, next) => {
+const verifyAge = async (req, res, next) => {
     const { age } = req.body;
     if (age) {
-    next();
-    }
-    res.status(400).json({ message: 'O campo "age" é obrigatório' });
+    return next();
+    } 
+    return res.status(400).json({ message: 'O campo "age" é obrigatório' });
 };
 
-const verifyAgeEighteen = (req, res, next) => {
+const verifyAgeEighteen = async (req, res, next) => {
     const { age } = req.body;
     if (Number.isInteger(age) && age >= 18) {
-    next();
+    return next();
     } 
-    res.status(400).json({ message: 'A pessoa palestrante deve ser maior de idade' });
+    return res.status(400).json({ message: 'A pessoa palestrante deve ser maior de idade' });
   };
 
 module.exports = { verifyAge, verifyAgeEighteen };
