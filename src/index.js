@@ -86,6 +86,15 @@ verifyWatchedAtDateFormat, verifyRate, verifyRateInteger, async (req, res) => {
   return res.status(200).json(talker[index]);
 });
 
+app.delete('/talker/:id', validateToken, verifyToken, async (req, res) => {
+  const { id } = req.params;
+  const data = await fs.readFile(path.resolve(__dirname, talkerJSON), 'utf-8');
+  const talker = JSON.parse(data);
+  const filterTalker = talker.filter((elem) => elem.id !== Number(id));
+  await fs.writeFile(path.resolve(__dirname, './talker.json'), JSON.stringify(filterTalker));
+  return res.status(204).end();
+});
+
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
