@@ -4,8 +4,27 @@ const fs = require('fs').promises;
 const path = require('path');
 const crypto = require('crypto');
 
+const { verifyToken, validateToken } = require('./middlewares/tokenMiddleware');
+const { verifyAge, verifyAgeEighteen } = require('./middlewares/ageMiddleware');
+const { verifyName, verifyNameLength } = require('./middlewares/nameMiddleware');
+const { verifyRate, verifyRateInteger, verifyTalk, verifyWatchedAt, 
+verifyWatchedAtDateFormat } = require('./middlewares/talkMiddleware');
+
 const app = express();
 app.use(bodyParser.json());
+app.use(
+  verifyToken,
+  validateToken,
+  verifyAge,
+  verifyAgeEighteen,
+  verifyName,
+  verifyNameLength,
+  verifyRate,
+  verifyRateInteger,
+  verifyTalk,
+  verifyWatchedAt,
+  verifyWatchedAtDateFormat,
+  );
 
 const HTTP_OK_STATUS = 200;
 const PORT = '3000';
@@ -49,10 +68,14 @@ app.post('/login', (req, res) => {
       return res.status(HTTP_OK_STATUS).json({ token });
 });
 
-// app.post('/talker', async (req, res) => {
-//   const data = await fs.writeFile(path.resolve(__dirname, './talker.json'), 'utf-8');
-//   const talker = JSON.parse(data);
-// });
+app.post('/talker', async (req, res) => {
+  const data = await fs.readFile(path.resolve(__dirname, './talker.json'), 'utf-8');
+  const talker = data && JSON.parse(data);
+  const newTalker = { ...req.body, id: talker.length + 1 };
+  const newTalkerFile = [...talker, newTalker];
+  await fs.writeFile(path.resolve(__dirname, './talker.json'), JSON.stringify(newTalkerFile));
+  res.status(201).json(newTalker);
+});
 
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
