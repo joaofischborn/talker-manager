@@ -1,17 +1,17 @@
 const validateToken = (req, res, next) => {
-    const token = req.headers.authorization;
-    if (!token) {
-    return res.status(401).json({ message: 'Token não encontrado' });
-    } 
+    const { authorization } = req.headers;
+    if (authorization) {
     next();
+    } 
+    res.status(401).json({ message: 'Token não encontrado' });
 };
 
 const verifyToken = (req, res, next) => {
-    const token = req.headers.authorization;
-    if (token.length !== 16) {
-    return res.status(401).json({ message: 'Token inválido' });
-    }
+    const { authorization } = req.headers;
+    if (authorization.length === 16) {
     next();
+    }
+    res.status(401).json({ message: 'Token inválido' });
 };
 
 module.exports = { validateToken, verifyToken };
