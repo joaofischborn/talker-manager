@@ -25,7 +25,7 @@ const verifyWatchedAtDateFormat = async (req, res, next) => {
 
 const verifyRate = async (req, res, next) => {
     const { talk: { rate } } = req.body;
-    if (rate) {
+    if (rate || rate === 0) {
         return next();
     }
     return res.status(400).json({ message: 'O campo "rate" é obrigatório' });

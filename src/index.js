@@ -15,9 +15,10 @@ app.use(bodyParser.json());
 
 const HTTP_OK_STATUS = 200;
 const PORT = '3000';
+const talkerJSON = path.resolve(__dirname, './talker.json');
 
 app.get('/talker', async (req, res) => {
-  const data = await fs.readFile(path.resolve(__dirname, './talker.json'), 'utf-8');
+  const data = await fs.readFile(talkerJSON, 'utf-8');
   const talker = JSON.parse(data);
   if (talker.length > 0) {
     return res.status(HTTP_OK_STATUS).json(talker);
@@ -27,7 +28,7 @@ app.get('/talker', async (req, res) => {
 
 app.get('/talker/:id', async (req, res) => {
   const idPeople = req.params.id;
-  const data = await fs.readFile(path.resolve(__dirname, './talker.json'), 'utf-8');
+  const data = await fs.readFile(talkerJSON, 'utf-8');
   const talker = JSON.parse(data);
   const filterById = talker.find(({ id }) => id === Number(idPeople));
   if (filterById) {
@@ -60,12 +61,29 @@ validateToken, verifyToken, verifyAge, verifyAgeEighteen, verifyName, verifyName
 verifyTalk, verifyWatchedAt, 
 verifyWatchedAtDateFormat, verifyRate, 
 verifyRateInteger, async (req, res) => {
-  const data = await fs.readFile(path.resolve(__dirname, './talker.json'), 'utf-8');
+  const data = await fs.readFile(talkerJSON, 'utf-8');
   const talker = JSON.parse(data);
   const newTalker = { ...req.body, id: talker.length + 1 };
   const newTalkerFile = [...talker, newTalker];
   await fs.writeFile(path.resolve(__dirname, './talker.json'), JSON.stringify(newTalkerFile));
   res.status(201).json(newTalker);
+});
+
+app.put('/talker/:id', validateToken, verifyToken, verifyAge, 
+verifyAgeEighteen, verifyName, verifyNameLength, 
+verifyTalk, verifyWatchedAt, 
+verifyWatchedAtDateFormat, verifyRate, verifyRateInteger, async (req, res) => {
+  const { id } = req.params;
+  const editTalker = req.body;
+  const data = await fs.readFile(path.resolve(__dirname, talkerJSON), 'utf-8');
+  const talker = JSON.parse(data);
+  const index = talker.findIndex((elem) => Number(elem.id) === Number(id));
+  talker[index].name = editTalker.name;
+  talker[index].age = editTalker.age;
+  talker[index].talk.watchedAt = editTalker.talk.watchedAt;
+  talker[index].talk.rate = editTalker.talk.rate;
+  await fs.writeFile(path.resolve(__dirname, './talker.json'), JSON.stringify(talker));
+  return res.status(200).json(talker[index]);
 });
 
 // não remova esse endpoint, e para o avaliador funcionar
