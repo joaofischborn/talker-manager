@@ -95,6 +95,14 @@ app.delete('/talker/:id', validateToken, verifyToken, async (req, res) => {
   return res.status(204).end();
 });
 
+app.get('/talker/search?q=searchTerm', validateToken, async (req, res) => {
+  const { q } = req.query;
+  const data = await fs.readFile(path.resolve(__dirname, talkerJSON), 'utf-8');
+  const talker = JSON.parse(data);
+  const getTalker = talker.filter((elem) => elem.name.includes(q));
+  return res.status(200).json(getTalker);
+});
+
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
